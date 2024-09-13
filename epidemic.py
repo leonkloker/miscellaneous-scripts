@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import time
 
+np.random.seed(0)
+
 class Simulation:
     def __init__(self, Time, dt, x, v, box, duration, rate, skin, fixed_rate=0, fmax=float('nan')):
         self.T_MAX = Time
@@ -126,31 +128,31 @@ class Simulation:
 
 
 #number of particles
-N = 100
+N = 300
 
 #box size
-BOX = np.array([50, 50])
+BOX = np.array([100, 100])
 
 #simulation time
-T_MAX = 5
+T_MAX = 50
 
 #integration time-step
 DT = 0.001
 
 #parameter for the average particle movement
-T = 10
+T = 3
 
 #maximum force during warm up
 f_max = 200
 
 #duration time of the disease
-duration = 1.5
+duration = 8
 
 #infection probability during contact
-infection_rate = 0.4
+infection_rate = 0.1
 
 #percentage of particles, which dont move
-fix_rate = 0.3
+fix_rate = 0.15
 
 DIM = BOX.shape[0]
 
@@ -184,17 +186,17 @@ plt.legend(loc='upper left')
 
 #when does the animation stop
 def frames():
-    while True:
+    while sim.t < sim.T_MAX:
         yield 1
 
 #set new positions and colours
 def animate(j):
-    for i in range(0, int(0.01/DT)):
+    for i in range(0, int(0.05/DT)):
         sim.vv_step()
 
-    if sim.t >= sim.T_MAX:
-        sim.T_MAX = sim.T_MAX * 2.
-        axis.set_xlim(xmin=0, xmax=sim.T_MAX)
+    #if sim.t >= sim.T_MAX:
+    #    sim.T_MAX = sim.T_MAX * 2.
+    #    axis.set_xlim(xmin=0, xmax=sim.T_MAX)
 
     xdata = np.linspace(0,sim.t,len(sim.recovered))
     rec.set_xdata(xdata)
@@ -208,10 +210,10 @@ def animate(j):
     return points, cases, cur, rec
 
 
-ani = animation.FuncAnimation(fig, animate, frames=frames, interval=1, blit=True)
-plt.show()
+ani = animation.FuncAnimation(fig2, animate, frames=frames, interval=1, blit=True)
+#plt.show()
 
-#start = time.time()
-#ani.save('animation5.gif', writer='PillowWriter', fps=20);
-#end = time.time()
-#print('computation time: '+str(end-start))
+start = time.time()
+ani.save('animation.gif', writer='Pillow', fps=30, dpi=100)
+end = time.time()
+print('computation time: '+str(end-start))
